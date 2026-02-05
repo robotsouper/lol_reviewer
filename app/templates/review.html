@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Match Review - {{ results.player.riot_id }}{% endblock %}
+
+{% block content %}
+<div class="review-header">
+    <h2>Match Review for {{ results.player.riot_id }}</h2>
+    <p class="region-info">Region: {{ results.player.region|upper }}</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Analyze Another Player</a>
+</div>
+
+{% if results.aggregate_stats %}
+<div class="aggregate-stats">
+    <h3>Overall Statistics</h3>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ results.aggregate_stats.total_matches }}</div>
+            <div class="stat-label">Total Matches</div>
+        </div>
+        <div class="stat-card {% if results.aggregate_stats.win_rate >= 50 %}positive{% else %}negative{% endif %}">
+            <div class="stat-value">{{ results.aggregate_stats.win_rate }}%</div>
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-detail">{{ results.aggregate_stats.wins }}W / {{ results.aggregate_stats.losses }}L</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ results.aggregate_stats.avg_kda }}</div>
+            <div class="stat-label">Average KDA</div>
+            <div class="stat-detail">{{ results.aggregate_stats.avg_kills }} / {{ results.aggregate_stats.avg_deaths }} / {{ results.aggregate_stats.avg_assists }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ results.aggregate_stats.avg_cs_per_min }}</div>
+            <div class="stat-label">CS per Minute</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ "{:,}".format(results.aggregate_stats.avg_damage) }}</div>
+            <div class="stat-label">Avg Damage</div>
+        </div>
+    </div>
+
+    {% if results.aggregate_stats.most_played_champions %}
+    <div class="most-played">
+        <h4>Most Played Champions</h4>
+        <div class="champion-list">
+            {% for champ in results.aggregate_stats.most_played_champions %}
+            <div class="champion-item">
+                <span class="champion-name">{{ champ.champion }}</span>
+                <span class="champion-count">{{ champ.count }} games</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="matches-section">
+    <h3>Match History ({{ results.matches|length }} matches)</h3>
+    <div class="matches-list">
+        {% for match in results.matches %}
+        <div class="match-card {% if match.win %}win{% else %}loss{% endif %}">
+            <div class="match-header">
+                <div class="match-result">
+                    <span class="result-badge">{{ 'Victory' if match.win else 'Defeat' }}</span>
+                    <span class="champion-name">{{ match.champion }}</span>
+                </div>
+                <div class="match-meta">
+                    <span class="game-mode">{{ match.game_mode }}</span>
+                    <span class="timestamp">{{ match.formatted_timestamp }}</span>
+                    <span class="duration">{{ match.formatted_duration }}</span>
+                </div>
+            </div>
+
+            <div class="match-stats">
+                <div class="stat-item">
+                    <span class="stat-label">KDA</span>
+                    <span class="stat-value kda">{{ match.kda }}</span>
+                    <span class="stat-detail">{{ match.kills }} / {{ match.deaths }} / {{ match.assists }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CS</span>
+                    <span class="stat-value">{{ match.cs }}</span>
+                    <span class="stat-detail">{{ match.cs_per_min }} per min</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Damage</span>
+                    <span class="stat-value">{{ "{:,}".format(match.damage) }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% if results.aggregate_stats and results.aggregate_stats.best_match %}
+<div class="highlights">
+    <h3>Performance Highlights</h3>
+    <div class="highlights-grid">
+        <div class="highlight-card best">
+            <h4>Best Match</h4>
+            <div class="highlight-content">
+                <p><strong>{{ results.aggregate_stats.best_match.champion }}</strong></p>
+                <p>KDA: {{ results.aggregate_stats.best_match.kda }}</p>
+                <p>{{ results.aggregate_stats.best_match.kills }}/{{ results.aggregate_stats.best_match.deaths }}/{{ results.aggregate_stats.best_match.assists }}</p>
+            </div>
+        </div>
+        {% if results.aggregate_stats.worst_match %}
+        <div class="highlight-card worst">
+            <h4>Needs Improvement</h4>
+            <div class="highlight-content">
+                <p><strong>{{ results.aggregate_stats.worst_match.champion }}</strong></p>
+                <p>KDA: {{ results.aggregate_stats.worst_match.kda }}</p>
+                <p>{{ results.aggregate_stats.worst_match.kills }}/{{ results.aggregate_stats.worst_match.deaths }}/{{ results.aggregate_stats.worst_match.assists }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

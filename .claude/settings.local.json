@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(if [ -f \"requirements.txt\" ])",
+      "Bash(then cat requirements.txt)",
+      "Bash(fi)"
+    ]
+  }
+}

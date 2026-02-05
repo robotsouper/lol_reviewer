@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}LoL Match Reviewer - Home{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h2>Get Your Match Review</h2>
+    <p>Enter your Riot ID and region to analyze your last 15-20 matches</p>
+</div>
+
+<div class="form-container">
+    <form method="POST" action="{{ url_for('main.review') }}" class="review-form">
+        <div class="form-group">
+            <label for="riot_id">Riot ID</label>
+            <input
+                type="text"
+                id="riot_id"
+                name="riot_id"
+                placeholder="GameName#TAG (e.g., Doublelift#NA1)"
+                required
+                pattern=".+#.+"
+            >
+            <small>Format: Your game name followed by # and your tag</small>
+        </div>
+
+        <div class="form-group">
+            <label for="region">Region</label>
+            <select id="region" name="region" required>
+                <option value="">Select a region...</option>
+                <optgroup label="Americas">
+                    <option value="na1">North America (NA1)</option>
+                    <option value="br1">Brazil (BR1)</option>
+                    <option value="la1">Latin America North (LA1)</option>
+                    <option value="la2">Latin America South (LA2)</option>
+                </optgroup>
+                <optgroup label="Europe">
+                    <option value="euw1">Europe West (EUW1)</option>
+                    <option value="eun1">Europe Nordic & East (EUN1)</option>
+                    <option value="tr1">Turkey (TR1)</option>
+                    <option value="ru">Russia (RU)</option>
+                </optgroup>
+                <optgroup label="Asia">
+                    <option value="kr">Korea (KR)</option>
+                    <option value="jp1">Japan (JP1)</option>
+                </optgroup>
+                <optgroup label="SEA/Oceania">
+                    <option value="oc1">Oceania (OC1)</option>
+                    <option value="ph2">Philippines (PH2)</option>
+                    <option value="sg2">Singapore (SG2)</option>
+                    <option value="th2">Thailand (TH2)</option>
+                    <option value="tw2">Taiwan (TW2)</option>
+                    <option value="vn2">Vietnam (VN2)</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="num_matches">Number of Matches</label>
+            <input
+                type="number"
+                id="num_matches"
+                name="num_matches"
+                value="20"
+                min="1"
+                max="20"
+            >
+            <small>Analyze 1-20 recent matches (default: 20)</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Analyze Matches</button>
+    </form>
+</div>
+
+<div class="info-section">
+    <h3>What You'll Get</h3>
+    <div class="features">
+        <div class="feature">
+            <h4>Per-Game Stats</h4>
+            <p>KDA, CS, damage dealt for each match</p>
+        </div>
+        <div class="feature">
+            <h4>Overall Trends</h4>
+            <p>Win rate, average performance, most played champions</p>
+        </div>
+        <div class="feature">
+            <h4>Best & Worst</h4>
+            <p>Your best and worst performances highlighted</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
